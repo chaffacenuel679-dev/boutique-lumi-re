@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LUMIÈRE — Boutique</title>
+<title>E&G</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--noir:#0d0d0d;--creme:#f5f0e8;--or:#c9a84c;--or-clair:#e8d5a3;--gris:#888}
@@ -135,7 +135,7 @@ footer span{color:var(--or)}
 <body>
 
 <header>
-  <div class="logo">Lumière</div>
+  <div class="logo">E&G</div>
   <nav>
     <a href="#catalogue">Catalogue</a>
     <a href="#contact">Contact</a>
@@ -146,8 +146,8 @@ footer span{color:var(--or)}
 
 <div class="hero">
   <p class="hero-sub">Collection 2026</p>
-  <h1>L'élégance<br><em>à votre portée</em></h1>
-  <p>Vêtements de qualité soigneusement sélectionnés pour femmes, hommes et enfants. Ainsi que vos meilleurs accessoires.</p>
+  <h1>L'élégance<br><em>et la beauté à votre portée</em></h1>
+  <p>Vos accessoirs et essentiels de beauté soigneusement sélectionnés pour sublimer votre look au quotidien.</p>
   <div class="hero-btns">
     <a href="#catalogue" class="btn-h btn-h-gold">Voir la collection</a>
     <a href="#contact" class="btn-h btn-h-outline">Nous contacter</a>
@@ -163,10 +163,10 @@ footer span{color:var(--or)}
 
 <div class="filters" id="catalogue">
   <button class="filter-btn active" onclick="filterProducts('all',this)">Tout</button>
-  <button class="filter-btn" onclick="filterProducts('femme',this)">Femme</button>
-  <button class="filter-btn" onclick="filterProducts('homme',this)">Homme</button>
-  <button class="filter-btn" onclick="filterProducts('enfant',this)">Enfant</button>
-  <button class="filter-btn" onclick="filterProducts('accessoire',this)">Accessoires</button>
+  <button class="filter-btn" onclick="filterProducts('Bijoux',this)">Bijoux</button>
+  <button class="filter-btn" onclick="filterProducts('Chaussures',this)">Chaussures</button>
+  <button class="filter-btn" onclick="filterProducts('Parfums et cosmétiques',this)">Parfums et cosmétiques</button>
+  <button class="filter-btn" onclick="filterProducts('Autres Accessoires',this)">Autres Accessoires</button>
 </div>
 
 <div class="section-title">
@@ -203,7 +203,7 @@ footer span{color:var(--or)}
         <div class="c-ico">📍</div>
         <div>
           <div class="c-label">Localisation</div>
-          <div class="c-value">Cotonou, Bénin</div>
+          <div class="c-value">Abomey-Calavi, Bénin</div>
           <div class="c-sub">Livraison nationale disponible</div>
         </div>
       </div>
@@ -226,7 +226,7 @@ footer span{color:var(--or)}
 </section>
 
 <footer>
-  &copy; 2026 <span>Lumière</span> — Boutique de vêtements · Cotonou, Bénin
+  &copy; 2026 <span>E&G</span> — Boutique d'accesoires · Abomey-Calavi, Bénin
 </footer>
 
 <div class="toast" id="toast"></div>
@@ -278,10 +278,10 @@ footer span{color:var(--or)}
     <div class="field">
       <label>Catégorie *</label>
       <select id="f-cat">
-        <option value="femme">Femme</option>
-        <option value="homme">Homme</option>
-        <option value="enfant">Enfant</option>
-        <option value="accessoire">Accessoire</option>
+        <option value="Bijoux">Bijoux</option>
+        <option value="Chaussures">Chaussures</option>
+        <option value="Parfums et cosmétiques">Parfums et cosmétiques</option>
+        <option value="Autres Accessoires">Autres Accessoires</option>
       </select>
     </div>
     <div class="field">
