@@ -177,7 +177,7 @@ footer span{color:var(--or)}
 .field textarea{resize:vertical;min-height:80px}
 .row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .photos-help{font-size:.76rem;color:var(--gris);margin-bottom:10px;line-height:1.5}
-.photos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .ph{position:relative;aspect-ratio:1;border-radius:var(--radius-sm);overflow:hidden;background:var(--sable);border:2px solid transparent}
 .ph img{width:100%;height:100%;object-fit:cover}
 .ph.main{border-color:var(--or)}
@@ -266,7 +266,6 @@ footer span{color:var(--or)}
   .modal{padding:26px 20px}
   .detail{padding:0}
   .overlay{padding:10px}
-  .photos-grid{grid-template-columns:repeat(3,1fr)}
   .row-2{grid-template-columns:1fr}
 }
 @media(max-width:360px){.grid{grid-template-columns:1fr}}
@@ -433,7 +432,7 @@ footer span{color:var(--or)}
     <p class="modal-sub" id="form-sub">Ajoute une ou plusieurs photos du même article (différents angles, couleurs…) et remplis les infos.</p>
     <div class="field">
       <label>Photos du produit * <span id="photo-counter" style="letter-spacing:0;text-transform:none"></span></label>
-      <p class="photos-help">La photo encadrée en or est la <b>photo principale</b>. Touche ★ pour en choisir une autre. Jusqu'à 8 photos.</p>
+      <p class="photos-help">La photo encadrée en or est la <b>photo principale</b>. Touche ★ pour en choisir une autre. 3 photos maximum, pour garder une bonne qualité.</p>
       <div class="photos-grid" id="photos-grid"></div>
     </div>
     <div class="field">
@@ -517,9 +516,9 @@ const WA_NUMBER = "2290158555763";
 
 // Les photos sont stockées en base64 dans le document Firestore,
 // qui est limité à 1 Mo : toutes les photos d'un article doivent tenir dedans.
-const MAX_PHOTOS = 8;
+const MAX_PHOTOS = 3;
 const PHOTOS_BUDGET = 900000; // caractères base64, marge laissée pour les autres champs
-const COMPRESSION_LEVELS = [[1000,.75],[850,.7],[720,.65],[600,.6],[500,.55],[420,.5]];
+const COMPRESSION_LEVELS = [[1600,.88],[1400,.85],[1200,.82],[1000,.78],[850,.72],[700,.65]];
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
