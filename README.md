@@ -28,7 +28,7 @@ Les commandes passent par WhatsApp, le catalogue est stocké dans **Firebase Fir
 - Barre admin dédiée : ＋ Article · 📢 Bandeau · 📊 Statistiques · Quitter
 - En mode admin, les boutons d'achat sont cachés : chaque carte affiche ses compteurs et « Modifier / Supprimer »
 - **Bandeau défilant** : messages définis par l'admin ; vide = aucun bandeau
-- **Statistiques** par article : fiches ouvertes, ajouts au panier, clics « Commander »
+- **Statistiques** par article : 👁 vues (fiches ouvertes) et 📦 commandes (clics « Commander »)
   (les visites de l'admin ne sont pas comptées)
 
 ## Données Firestore

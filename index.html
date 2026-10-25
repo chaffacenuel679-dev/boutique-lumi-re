@@ -380,7 +380,7 @@ footer span{color:var(--or)}
 
 /* Admin : statistiques */
 .stats-modal{max-width:640px}
-.st-totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.st-totals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
 .st-tile{background:var(--surface-2);border:1px solid var(--ligne);border-radius:12px;padding:12px 8px;text-align:center}
 .st-tile b{display:block;font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:600}
 .st-tile span{font-size:.64rem;color:var(--gris);letter-spacing:1px;text-transform:uppercase}
@@ -943,7 +943,7 @@ function renderBanner() {
 // ── RENDU GRILLE ──
 function statLine(id) {
   const s = stats[id] || {};
-  return `<span title="Fiches ouvertes">👁 ${s.views || 0}</span><span title="Ajouts au panier">🛍 ${s.cart || 0}</span><span title="Clics Commander">💬 ${s.orders || 0}</span>`;
+  return `<span title="Vues (fiches ouvertes)">👁 ${s.views || 0}</span><span title="Commandes (clics sur Commander)">📦 ${s.orders || 0}</span>`;
 }
 
 function renderGrid() {
@@ -1315,7 +1315,6 @@ function addToCart(p) {
   else cart.push({ id: p.id, qty: 1 });
   saveCart();
   renderGrid();
-  track(p.id, 'cart');
   showToast(`🛍 ${p.name} ajouté au panier`);
 }
 function removeFromCart(id) {
@@ -1809,7 +1808,7 @@ function updateCardStats() {
     if (el) el.innerHTML = statLine(card.dataset.id);
   });
 }
-const STAT_FIELDS = [['views', '👁', 'Vues'], ['cart', '🛍', 'Panier'], ['orders', '💬', 'Commandes']];
+const STAT_FIELDS = [['views', '👁', 'Vues'], ['orders', '📦', 'Commandes']];
 function renderStats() {
   const body = $('stats-body');
   if (statsError) {
@@ -1823,7 +1822,7 @@ function renderStats() {
   rows.sort((a, b) => (b.s[statsSort] || 0) - (a.s[statsSort] || 0) || a.p.name.localeCompare(b.p.name));
   body.innerHTML = `
     <div class="st-totals">${STAT_FIELDS.map(([f, ico, label]) => `<div class="st-tile"><b>${sum(f)}</b><span>${ico} ${label}</span></div>`).join('')}</div>
-    <p class="st-legend">👁 fiche ouverte · 🛍 ajout au panier · 💬 clic sur « Commander » (WhatsApp)</p>
+    <p class="st-legend">👁 Vues : fiche de l'article ouverte · 📦 Commandes : clic sur « Commander » (WhatsApp)</p>
     <div class="st-tabs" role="tablist" aria-label="Trier par"><span class="st-tabs-label">Trier par</span>${STAT_FIELDS.map(([f, ico, label]) => `<button role="tab" data-sort="${f}" aria-selected="${f === statsSort}" class="${f === statsSort ? 'active' : ''}">${ico} ${label}</button>`).join('')}</div>
     ${rows.length ? `<ol class="st-list">${rows.map((r, i) => `
       <li class="st-row">
