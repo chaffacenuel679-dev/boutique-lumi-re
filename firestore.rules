@@ -3,8 +3,9 @@ rules_version = '2';
 // Règles de sécurité Firestore de la boutique E&G.
 // À copier dans : console Firebase → Firestore Database → Règles → Publier.
 //
-// Tout le monde peut LIRE le catalogue.
+// Tout le monde peut LIRE le catalogue et le bandeau.
 // Seul le compte admin (identifié par son UID) peut AJOUTER, MODIFIER ou SUPPRIMER.
+// Les visiteurs peuvent seulement ajouter +1 aux compteurs de statistiques.
 // UID du compte admin (visible dans : Authentication → Users).
 
 service cloud.firestore {
@@ -24,6 +25,25 @@ service cloud.firestore {
     match /produitsPhotos/{id} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    // Réglages du site (bandeau défilant)
+    match /config/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Statistiques : lisibles par l'admin seulement.
+    // Un visiteur peut uniquement augmenter un compteur de 1, pour un article qui existe.
+    match /stats/{id} {
+      function nouveau(k) { return request.resource.data.get(k, 0); }
+      function ancien(k) { return resource == null ? 0 : resource.data.get(k, 0); }
+      function plusUn(k) { return nouveau(k) is int && nouveau(k) - ancien(k) in [0, 1]; }
+
+      allow read, delete: if isAdmin();
+      allow create, update: if exists(/databases/$(database)/documents/produits/$(id))
+        && request.resource.data.keys().hasOnly(['views', 'cart', 'orders'])
+        && plusUn('views') && plusUn('cart') && plusUn('orders');
     }
 
     // Tout le reste est fermé
