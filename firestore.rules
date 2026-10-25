@@ -5,13 +5,13 @@ rules_version = '2';
 //
 // Tout le monde peut LIRE le catalogue.
 // Seul le compte admin (identifié par son UID) peut AJOUTER, MODIFIER ou SUPPRIMER.
-// Remplace REMPLACER_PAR_TON_UID par l'UID visible dans : Authentication → Users.
+// UID du compte admin (visible dans : Authentication → Users).
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
     function isAdmin() {
-      return request.auth != null && request.auth.uid == "REMPLACER_PAR_TON_UID";
+      return request.auth != null && request.auth.uid == "JXZbkPw1ELNcKbWYvqzvuL0BJGe2";
     }
 
     // Infos des articles + miniatures

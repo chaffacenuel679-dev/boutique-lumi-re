@@ -32,7 +32,7 @@ Les commandes passent par WhatsApp, le catalogue est stocké dans **Firebase Fir
 2. Onglet **Users** → **Ajouter un utilisateur** (ton email + un mot de passe solide).
 3. Copier l'**UID** de cet utilisateur.
 4. **Firestore Database** → **Règles** : coller le contenu de `firestore.rules`,
-   remplacer `REMPLACER_PAR_TON_UID` par l'UID, puis **Publier**.
+   vérifier que l'UID est bien celui du compte admin, puis **Publier**.
 5. Sur le site : bouton **Admin** → se connecter avec cet email.
 6. Si une barre « anciens articles » apparaît, cliquer sur **Optimiser maintenant**.
 
