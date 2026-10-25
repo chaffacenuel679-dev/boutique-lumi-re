@@ -280,7 +280,7 @@ footer span{color:var(--or)}
 .cart-item-info{flex:1;min-width:0}
 .cart-item-name{font-size:.9rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cart-item-price{font-size:.8rem;color:var(--gris);margin-top:2px}
-.qty{display:flex;align-items:center;gap:6px}
+.qty{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .qty button{width:28px;height:28px;border-radius:50%;border:1px solid var(--ligne);background:#fff;cursor:pointer;font-size:.95rem;color:var(--texte)}
 .qty button:hover{border-color:var(--or)}
 .qty span{min-width:18px;text-align:center;font-weight:700;font-size:.88rem}
@@ -288,7 +288,11 @@ footer span{color:var(--or)}
 .cart-total b{font-size:1.3rem}
 .cart-empty{text-align:center;color:var(--gris);padding:30px 0 10px;font-size:.9rem}
 .cart-note{font-size:.76rem;color:var(--gris);text-align:center;margin-top:10px}
-.link-btn{background:none;border:none;color:var(--gris);font-size:.78rem;text-decoration:underline;cursor:pointer;margin-top:12px;align-self:center}
+.cart-remove{width:30px;height:30px;flex-shrink:0;border-radius:50%;border:none;background:#fbe4e3;color:#a32b28;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cart-remove:hover{background:#f6cfcd}
+.cart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:.84rem;color:var(--gris)}
+.btn-clear{background:none;border:1px solid #f0c7c5;color:#a32b28;padding:7px 14px;border-radius:30px;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-weight:500}
+.btn-clear:hover{background:#fbe4e3}
 
 .toast{position:fixed;bottom:90px;left:50%;transform:translate(-50%,40px);background:var(--noir);color:var(--or-clair);padding:13px 22px;font-size:.84rem;z-index:999;opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.34,1.56,.64,1);border-radius:30px;box-shadow:var(--ombre-forte);max-width:calc(100% - 32px);text-align:center}
 .toast.show{transform:translate(-50%,0);opacity:1}
@@ -723,7 +727,7 @@ function renderGrid() {
           <div class="card-price">${fmtPrice(p.price)}<span>FCFA</span></div>
           ${ok ? `<div class="card-btns">
             <a class="btn-cmd" href="${waLink(p)}" target="_blank" rel="noopener">Commander</a>
-            <button class="btn-add${inCart ? ' added' : ''}" data-action="cart" aria-label="Ajouter ${esc(p.name)} au panier" title="Ajouter au panier">${inCart ? '✓' : '+'}</button>
+            <button class="btn-add${inCart ? ' added' : ''}" data-action="cart" aria-label="${inCart ? 'Retirer' : 'Ajouter'} ${esc(p.name)} ${inCart ? 'du' : 'au'} panier" title="${inCart ? 'Dans le panier — toucher pour retirer' : 'Ajouter au panier'}">${inCart ? '✓' : '+'}</button>
           </div>` : '<span class="soldout-txt">Épuisé</span>'}
         </div>
       </div>
@@ -746,7 +750,7 @@ $('grid').addEventListener('click', e => {
   const action = e.target.closest('[data-action]')?.dataset.action;
   if (action === 'delete') return deleteProduct(p.id);
   if (action === 'edit') return openEdit(p);
-  if (action === 'cart') return addToCart(p);
+  if (action === 'cart') return toggleCart(p);
   if (e.target.closest('.btn-cmd')) return;
   const img = e.target.closest('.slides img');
   openDetail(p, img ? Number(img.dataset.index) : 0);
@@ -795,6 +799,7 @@ function openDetail(p, index) {
   $('d-order').classList.toggle('disabled', !ok);
   $('d-order-label').textContent = ok ? 'Commander sur WhatsApp' : 'Article épuisé';
   $('d-add').style.display = ok ? '' : 'none';
+  renderDetailCartBtn();
   renderDetailThumbs();
   showDetailImage();
   openOverlay('overlay-detail');
@@ -833,7 +838,10 @@ $('d-thumbs').addEventListener('click', e => {
   const b = e.target.closest('button');
   if (b) { detail.index = Number(b.dataset.index); showDetailImage(); }
 });
-$('d-add').onclick = () => addToCart(detail.product);
+$('d-add').onclick = () => { toggleCart(detail.product); renderDetailCartBtn(); };
+function renderDetailCartBtn() {
+  $('d-add').textContent = cart.some(c => c.id === detail.product.id) ? '✕ Retirer du panier' : '🛍 Ajouter au panier';
+}
 $('d-share').onclick = async () => {
   const p = detail.product;
   const url = productUrl(p);
@@ -895,6 +903,16 @@ function addToCart(p) {
   renderGrid();
   showToast(`🛍 ${p.name} ajouté au panier`);
 }
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  saveCart();
+  renderGrid();
+}
+function toggleCart(p) {
+  if (!cart.some(c => c.id === p.id)) return addToCart(p);
+  removeFromCart(p.id);
+  showToast(`${p.name} retiré du panier`);
+}
 function renderCart() {
   const lines = cartLines();
   if (!lines.length) {
@@ -905,7 +923,9 @@ function renderCart() {
   const msg = 'Bonjour, je souhaite commander :\n' +
     lines.map(l => `- ${l.qty} × ${l.p.name} (${fmtPrice(l.p.price)} FCFA)${l.p.sizes ? ' — taille : ' : ''}`).join('\n') +
     `\n\nTotal : ${fmtPrice(total)} FCFA\nAdresse de livraison : `;
+  const count = lines.reduce((s, l) => s + l.qty, 0);
   $('cart-body').innerHTML = `
+    <div class="cart-head"><span>${count} article${count > 1 ? 's' : ''}</span><button class="btn-clear" data-clear>🗑 Vider le panier</button></div>
     <ul class="cart-list">${lines.map(l => `
       <li class="cart-item" data-id="${esc(l.p.id)}">
         <img src="${esc(getThumbs(l.p)[0] || '')}" alt="">
@@ -918,12 +938,12 @@ function renderCart() {
           <span>${l.qty}</span>
           <button data-qty="1" aria-label="Ajouter un ${esc(l.p.name)}">+</button>
         </div>
+        <button class="cart-remove" data-remove aria-label="Retirer ${esc(l.p.name)} du panier" title="Retirer">✕</button>
       </li>`).join('')}
     </ul>
     <div class="cart-total"><span>Total</span><b>${fmtPrice(total)} FCFA</b></div>
     <a class="btn-wa-big" href="${waUrl(msg)}" target="_blank" rel="noopener">Commander sur WhatsApp</a>
-    <p class="cart-note">Le prix de la livraison sera confirmé sur WhatsApp.</p>
-    <div style="display:flex;justify-content:center"><button class="link-btn" data-clear>Vider le panier</button></div>`;
+    <p class="cart-note">Le prix de la livraison sera confirmé sur WhatsApp.</p>`;
 }
 $('cart-body').addEventListener('click', e => {
   const q = e.target.closest('[data-qty]');
@@ -932,8 +952,13 @@ $('cart-body').addEventListener('click', e => {
     const line = cart.find(c => c.id === id);
     if (line) line.qty += Number(q.dataset.qty);
     cart = cart.filter(c => c.qty > 0);
+  } else if (e.target.closest('[data-remove]')) {
+    const id = e.target.closest('.cart-item').dataset.id;
+    cart = cart.filter(c => c.id !== id);
   } else if (e.target.closest('[data-clear]')) {
+    if (!confirm('Vider tout le panier ?')) return;
     cart = [];
+    showToast('Panier vidé');
   } else return;
   saveCart();
   renderCart();
@@ -947,6 +972,7 @@ const focusBefore = {};
 function openOverlay(id) {
   const ov = $(id);
   if (!ov.classList.contains('open')) focusBefore[id] = document.activeElement;
+  $('toast').classList.remove('show');
   ov.classList.add('open');
   document.body.style.overflow = 'hidden';
   setTimeout(() => (ov.querySelector('input:not([type=file]),.btn-wa-big:not(.disabled)') || ov.querySelector('.close-modal')).focus(), 50);
