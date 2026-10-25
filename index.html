@@ -294,6 +294,12 @@ footer span{color:var(--or)}
 .pwd-modal .field{text-align:left}
 .lock-icon{font-size:2.4rem;display:block;margin-bottom:14px}
 .pwd-error{color:var(--rouge);font-size:.8rem;margin-top:8px;display:none}
+.pwd-wrap{position:relative}
+.field .pwd-wrap input{padding-right:48px}
+.pwd-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;border-radius:50%;background:none;color:var(--gris);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .2s,background .2s}
+.pwd-eye:hover{color:var(--texte);background:var(--sable)}
+.pwd-eye svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pwd-eye.on{color:var(--or-texte)}
 .progress-bar{width:100%;height:4px;background:var(--sable);border-radius:2px;margin-top:12px;display:none;overflow:hidden}
 .progress-fill{height:100%;background:var(--or);transition:width .3s;width:0%}
 
@@ -696,7 +702,10 @@ footer span{color:var(--or)}
     </div>
     <div class="field">
       <label for="pwd-input">Mot de passe</label>
-      <input type="password" id="pwd-input" autocomplete="current-password" placeholder="Mot de passe..." onkeydown="if(event.key==='Enter')checkPwd()">
+      <div class="pwd-wrap">
+        <input type="password" id="pwd-input" autocomplete="current-password" placeholder="Mot de passe..." onkeydown="if(event.key==='Enter')checkPwd()">
+        <button type="button" class="pwd-eye" id="pwd-eye" onclick="togglePwd()" aria-label="Afficher le mot de passe" aria-pressed="false" title="Afficher le mot de passe"></button>
+      </div>
       <p class="pwd-error" id="pwd-error" role="alert"></p>
     </div>
     <div class="modal-actions">
@@ -1472,7 +1481,28 @@ window.exitAdmin = async function() {
   showToast('Tu es déconnecté');
 };
 
+// Œil : afficher / masquer le mot de passe pendant la saisie
+const EYE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-2.9 3.9M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m3 3 18 18"/></svg>';
+function renderPwdEye(show) {
+  $('pwd-input').type = show ? 'text' : 'password';
+  $('pwd-eye').innerHTML = show ? EYE_OFF : EYE;
+  $('pwd-eye').classList.toggle('on', show);
+  $('pwd-eye').setAttribute('aria-pressed', show);
+  const label = show ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
+  $('pwd-eye').setAttribute('aria-label', label);
+  $('pwd-eye').title = label;
+}
+window.togglePwd = function() {
+  const input = $('pwd-input');
+  const pos = input.selectionStart;
+  renderPwdEye(input.type === 'password');
+  input.focus();
+  try { input.setSelectionRange(pos, pos); } catch {}
+};
+
 window.closePwd = function() {
+  renderPwdEye(false); // toujours masqué à la prochaine ouverture
   closeOverlay('overlay-pwd');
   $('pwd-input').value = '';
   $('pwd-error').style.display = 'none';
@@ -1840,6 +1870,7 @@ function showToast(msg) {
 }
 
 // ── INIT ──
+renderPwdEye(false);
 if (matchMedia('(hover: hover) and (pointer: fine)').matches) $('d-zoom-hint').textContent = '🔍 Double-clic pour zoomer';
 renderThemeBtn();
 renderPhotos();
