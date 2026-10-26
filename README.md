@@ -36,7 +36,8 @@ Les commandes passent par WhatsApp, le catalogue est stocké dans **Firebase Fir
 - `produits/{id}` : nom, prix, catégorie, description, tailles, disponibilité, **miniatures** (légères)
 - `produitsPhotos/{id}` : photos en grande taille, chargées seulement quand on ouvre la fiche
 - `config/site` : réglages du site (messages du bandeau défilant)
-- `stats/{id}` : compteurs par article (`views`, `cart`, `orders`) — les visiteurs ne peuvent qu'ajouter +1
+- `stats/{id}` : compteurs par article (`views`, `orders`) — les visiteurs ne peuvent qu'ajouter +1
+  (les règles acceptent encore `cart`, un ancien compteur qui n'est plus utilisé)
 
 ## Mise en place de la sécurité (à faire une fois)
 
